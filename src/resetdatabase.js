@@ -1,6 +1,6 @@
 var ObjectID = require('mongodb').ObjectID;
 
-var databaseName = "db";
+var databaseName = "TomatoBase";
 // Put the initial mock objects here.
 var initialData = null;
 
