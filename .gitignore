@@ -1,4 +1,5 @@
 node_modules/
 *.csv
+*.class
 data/
 !node_modules/mongo-express/config.default.js
