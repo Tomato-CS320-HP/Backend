@@ -10,7 +10,7 @@ public class CSVReader {
         String csvFile = "./1-perform.csv";
         BufferedReader br = null;
         String line = "";
-        String cvsSplitBy = ",";
+        String cvsSplitBy = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
         String[][] parsed = new String[474][116];
         int x = 0;
         try {
@@ -22,15 +22,15 @@ public class CSVReader {
                 String[] parsedLine = line.split(cvsSplitBy);
 
                     for(int j = 0; j < parsedLine.length; j++){
-                        parsed[x][j] = parsedLine[j];
+                        parsed[x][j] = parsedLine[j].replace("\"","") ;
                     }
                     x++;
             } 
-            /*
+                /*
                 for(int i = 0; i < 116; i++){
                     System.out.println();
                     for(int j = 0; j < parsed[0].length; j++){
-                        System.out.print(parsed[i][j]);
+                        System.out.print(parsed[i][j] + " ");
                     }
                 }*/
 
