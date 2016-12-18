@@ -2,7 +2,14 @@ var ObjectID = require('mongodb').ObjectID;
 
 var databaseName = "TomatoBase";
 // Put the initial mock objects here.
-var initialData = null;
+var initialData = {
+  "reads": {
+    "1": {
+         "_id": 1,
+         "value": 10
+    }
+  }
+};
 
 /**
  * Resets a collection.

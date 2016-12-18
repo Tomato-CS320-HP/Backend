@@ -31,6 +31,38 @@ MongoClient.connect(url, function(err, db) {
     res.status(500).send("A database error occurred: " + err);
   }
 
+function getReadData(systemid, callback){
+  console.log(db.collection('reads').find());
+  db.collection('reads').findOne({
+    _id: systemid
+  }, function (err, data) {
+    console.log(data);
+    if (err) return callback(err);
+    else if(data === null) {
+      return callback(null, null);
+    }
+    callback(null, data)
+  });
+}
+
+app.get('/company/:cid/devices/:type', function(req, res){
+  var systemid = req.params.cid;
+  var device = req.params.type;
+  console.log(systemid + " " + device);
+  getReadData(systemid, function(err, data) {
+    if(err) {
+      res.status(500).send("Database error: " + err);
+    } else if (data === null) {
+      res.status(400).send("Could not find request");
+    } else {
+      // Send data.
+      res.send(data);
+    }
+  });
+});
+
+
+
   // Starts the server on port 3000!
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
