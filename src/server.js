@@ -21,14 +21,9 @@ var url = 'mongodb://localhost:27017/TomatoBase';
 
 MongoClient.connect(url, function(err, db) {
 
-function getReadData(systemid, callback){
- var data = {
-  "label": systemid,
-  "write": (4 * systemid) + systemid //random mock data
- }
-callback(null, data);
-  /*
-  db.collection('reads').findOne({
+function getCompanyData(systemid, callback){
+db.collection('test', {strict:true}, function(err, collection) {});
+  db.collection('companies').findOne({
     _id: systemid
   }, function (err, data) {
     console.log(data);
@@ -37,14 +32,14 @@ callback(null, data);
       return callback(null, null);
     }
     callback(null, data);
-  });*/
+  });
 }
 
 app.get('/company/:cid/devices/:type', function(req, res){
-  var systemid = req.params.cid;
+  var systemid = "000000000000000000000" + req.params.cid;
   var device = req.params.type;
   console.log(systemid + " " + device);
-  getReadData(systemid, function(err, data) {
+  getCompanyData(new ObjectID(systemid), function(err, data) {
     if(err) {
       res.status(500).send("Database error: " + err);
     } else if (data === null) {
