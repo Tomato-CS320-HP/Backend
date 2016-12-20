@@ -10,29 +10,24 @@ var mongo_express = require('mongo-express/lib/middleware');
 // Import the default Mongo Express configuration
 var mongo_express_config = require('mongo-express/config.default.js');
 
+
+app.use('/mongo_express', mongo_express(mongo_express_config));
+app.use(express.static('../Frontend/index.html'));
+
 var MongoDB = require('mongodb');
 var MongoClient = MongoDB.MongoClient;
 var ObjectID = MongoDB.ObjectID;
 var url = 'mongodb://localhost:27017/TomatoBase';
 
-// Support receiving text in HTTP request bodies
-var bodyParser = require('body-parser');
-
 MongoClient.connect(url, function(err, db) {
 
-  app.use('/mongo_express', mongo_express(mongo_express_config));
-
-  app.use(express.static('../Frontend/index.html'));
-  app.use(bodyParser.text());
-  // Support receiving JSON in HTTP request bodies
-  app.use(bodyParser.json());
-
-  function sendDatabaseError(res, err){
-    res.status(500).send("A database error occurred: " + err);
-  }
-
 function getReadData(systemid, callback){
-  console.log(db.collection('reads').find());
+ var data = {
+  "label": systemid,
+  "write": (4 * systemid) + systemid //random mock data
+ }
+callback(null, data);
+  /*
   db.collection('reads').findOne({
     _id: systemid
   }, function (err, data) {
@@ -41,8 +36,8 @@ function getReadData(systemid, callback){
     else if(data === null) {
       return callback(null, null);
     }
-    callback(null, data)
-  });
+    callback(null, data);
+  });*/
 }
 
 app.get('/company/:cid/devices/:type', function(req, res){
@@ -60,7 +55,6 @@ app.get('/company/:cid/devices/:type', function(req, res){
     }
   });
 });
-
 
 
   // Starts the server on port 3000!
