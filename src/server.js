@@ -10,30 +10,20 @@ var mongo_express = require('mongo-express/lib/middleware');
 // Import the default Mongo Express configuration
 var mongo_express_config = require('mongo-express/config.default.js');
 
+
+app.use('/mongo_express', mongo_express(mongo_express_config));
+app.use(express.static('../Frontend/index.html'));
+
 var MongoDB = require('mongodb');
 var MongoClient = MongoDB.MongoClient;
 var ObjectID = MongoDB.ObjectID;
 var url = 'mongodb://localhost:27017/TomatoBase';
 
-// Support receiving text in HTTP request bodies
-var bodyParser = require('body-parser');
-
 MongoClient.connect(url, function(err, db) {
 
-  app.use('/mongo_express', mongo_express(mongo_express_config));
-
-  app.use(express.static('../Frontend/index.html'));
-  app.use(bodyParser.text());
-  // Support receiving JSON in HTTP request bodies
-  app.use(bodyParser.json());
-
-  function sendDatabaseError(res, err){
-    res.status(500).send("A database error occurred: " + err);
-  }
-
-function getReadData(systemid, callback){
-  console.log(db.collection('reads').find());
-  db.collection('reads').findOne({
+function getCompanyData(systemid, callback){
+db.collection('test', {strict:true}, function(err, collection) {});
+  db.collection('companies').findOne({
     _id: systemid
   }, function (err, data) {
     console.log(data);
@@ -41,15 +31,15 @@ function getReadData(systemid, callback){
     else if(data === null) {
       return callback(null, null);
     }
-    callback(null, data)
+    callback(null, data);
   });
 }
 
 app.get('/company/:cid/devices/:type', function(req, res){
-  var systemid = req.params.cid;
+  var systemid = "000000000000000000000" + req.params.cid;
   var device = req.params.type;
   console.log(systemid + " " + device);
-  getReadData(systemid, function(err, data) {
+  getCompanyData(new ObjectID(systemid), function(err, data) {
     if(err) {
       res.status(500).send("Database error: " + err);
     } else if (data === null) {
@@ -60,7 +50,6 @@ app.get('/company/:cid/devices/:type', function(req, res){
     }
   });
 });
-
 
 
   // Starts the server on port 3000!
