@@ -21,25 +21,16 @@ var url = 'mongodb://localhost:27017/TomatoBase';
 
 MongoClient.connect(url, function(err, db) {
 
-function getCompanyData(systemid, callback){
-db.collection('test', {strict:true}, function(err, collection) {});
-  db.collection('companies').findOne({
-    _id: systemid
-  }, function (err, data) {
-    console.log(data);
-    if (err) return callback(err);
-    else if(data === null) {
-      return callback(null, null);
-    }
-    callback(null, data);
-  });
+function getCompanyData(callback){
+  db.collection('companies').find().toArray(function(err,items){
+    if(err) callback(err);
+    else callback(null, items);
+}
+);
 }
 
 app.get('/company/:cid/devices/:type', function(req, res){
-  var systemid = "000000000000000000000" + req.params.cid;
-  var device = req.params.type;
-  console.log(systemid + " " + device);
-  getCompanyData(new ObjectID(systemid), function(err, data) {
+  getCompanyData(function(err, data) {
     if(err) {
       res.status(500).send("Database error: " + err);
     } else if (data === null) {
